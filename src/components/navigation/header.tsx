@@ -27,7 +27,7 @@ const Header = () => {
                                 </NavigationMenuLink>
                             </NavigationMenuItem>
                             <NavigationMenuItem>
-                                <NavigationMenuLink href="customer" className={navigationMenuTriggerStyle()}>
+                                <NavigationMenuLink href="clients" className={navigationMenuTriggerStyle()}>
                                     Mes clients
                                 </NavigationMenuLink>
                             </NavigationMenuItem>
@@ -36,7 +36,7 @@ const Header = () => {
                 </div>
                 <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
                     <Button variant="outline" size="icon" asChild>
-                        <a href="#"><Settings2 size={18} /></a>
+                        <a href="parametres"><Settings2 size={18} /></a>
                     </Button>
                     <ModeToggle />
                 </div>

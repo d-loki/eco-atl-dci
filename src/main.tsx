@@ -9,6 +9,7 @@ import ErrorPage from '@/pages/error.tsx';
 import QuotationPage from '@/pages/quotation';
 import DashboardPage from '@/pages/dashboard';
 import CustomerPage from '@/pages/customer';
+import ParameterPage from '@/pages/parameter';
 
 const router = createBrowserRouter([
     {
@@ -25,8 +26,12 @@ const router = createBrowserRouter([
                 element: <QuotationPage />,
             },
             {
-                path: 'customer',
+                path: 'clients',
                 element: <CustomerPage />,
+            },
+            {
+                path: 'parametres',
+                element: <ParameterPage />,
             },
         ]
     }
