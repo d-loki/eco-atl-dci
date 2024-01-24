@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './styles.css';
-import {ThemeProvider} from '@/components/theme-provider.tsx';
-import {Toaster} from '@/components/ui/sonner.tsx';
+import { ThemeProvider } from '@/components/theme-provider.tsx';
+import { Toaster } from '@/components/ui/sonner.tsx';
 import Root from '@/routes/root.tsx';
-import {createBrowserRouter, RouterProvider} from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ErrorPage from '@/pages/error.tsx';
 import QuotationPage from '@/pages/quotation';
 import DashboardPage from '@/pages/dashboard';
@@ -33,8 +33,8 @@ const router = createBrowserRouter([
                 path: 'parametres',
                 element: <ParameterPage />,
             },
-        ]
-    }
+        ],
+    },
 ]);
 // Rendu de l'application
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
@@ -43,5 +43,5 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
             <RouterProvider router={router} />
             <Toaster />
         </ThemeProvider>
-    </React.StrictMode>,
+    </React.StrictMode>
 );

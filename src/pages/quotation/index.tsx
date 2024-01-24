@@ -1,5 +1,5 @@
-import {DataTable} from '@/pages/quotation/data-table.tsx';
-import {columns, QuotationItem} from '@/pages/quotation/columns.tsx';
+import { DataTable } from '@/pages/quotation/data-table.tsx';
+import { columns, QuotationItem } from '@/pages/quotation/columns.tsx';
 
 const QuotationPage = () => {
     const data: QuotationItem[] = [];
@@ -17,6 +17,10 @@ const QuotationPage = () => {
         });
     }
 
+    const t = 'test';
+    const t = 'test';
+    const t = 'test';
+    const t = 'test';
 
     return (
         <div>

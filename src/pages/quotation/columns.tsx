@@ -1,44 +1,54 @@
-import {ColumnDef} from '@tanstack/react-table';
+import { ColumnDef } from '@tanstack/react-table';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
-    DropdownMenuTrigger
+    DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu.tsx';
-import {Button} from '@/components/ui/button.tsx';
-import {FolderOpen, FolderX, ListChecks, MoreHorizontal, Pencil, Send, Trash2} from 'lucide-react';
+import { Button } from '@/components/ui/button.tsx';
+import {
+    FolderOpen,
+    FolderX,
+    ListChecks,
+    MoreHorizontal,
+    Pencil,
+    Send,
+    Trash2,
+} from 'lucide-react';
 
-import {Checkbox} from '@/components/ui/checkbox';
-import {DataTableColumnHeader} from '@/components/data-table/column-header.tsx';
+import { Checkbox } from '@/components/ui/checkbox';
+import { DataTableColumnHeader } from '@/components/data-table/column-header.tsx';
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type QuotationItem = {
-    reference: string
-    type: string
-    customer: string
-    total: number
-    created_at: string
-    status: 'pending' | 'processing' | 'success' | 'failed'
-    is_send: boolean
-}
+    reference: string;
+    type: string;
+    customer: string;
+    total: number;
+    created_at: string;
+    status: 'pending' | 'processing' | 'success' | 'failed';
+    is_send: boolean;
+};
 
 export const columns: ColumnDef<QuotationItem>[] = [
     {
         id: 'select',
-        header: ({table}) => (
+        header: ({ table }) => (
             <Checkbox
                 checked={
                     table.getIsAllPageRowsSelected() ||
                     (table.getIsSomePageRowsSelected() && 'indeterminate')
                 }
-                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                onCheckedChange={(value) =>
+                    table.toggleAllPageRowsSelected(!!value)
+                }
                 aria-label="Select all"
             />
         ),
-        cell: ({row}) => (
+        cell: ({ row }) => (
             <Checkbox
                 checked={row.getIsSelected()}
                 onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -50,20 +60,28 @@ export const columns: ColumnDef<QuotationItem>[] = [
     },
     {
         accessorKey: 'reference',
-        header: ({column}) => (<DataTableColumnHeader column={column} title="Référence" />),
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Référence" />
+        ),
     },
     {
         accessorKey: 'type',
-        header: ({column}) => (<DataTableColumnHeader column={column} title="Type" />),
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Type" />
+        ),
     },
     {
         accessorKey: 'customer',
-        header: ({column}) => (<DataTableColumnHeader column={column} title="Client" />),
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Client" />
+        ),
     },
     {
         accessorKey: 'total',
-        header: ({column}) => (<DataTableColumnHeader column={column} title="Total" />),
-        cell: ({row}) => {
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Total" />
+        ),
+        cell: ({ row }) => {
             const amount = parseFloat(row.getValue('total'));
             const formatted = new Intl.NumberFormat('fr-FR', {
                 style: 'currency',
@@ -71,19 +89,25 @@ export const columns: ColumnDef<QuotationItem>[] = [
             }).format(amount);
 
             return <div className="font-medium">{formatted}</div>;
-        }
+        },
     },
     {
         accessorKey: 'created_at',
-        header: ({column}) => (<DataTableColumnHeader column={column} title="Crée le" />),
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Crée le" />
+        ),
     },
     {
         accessorKey: 'status',
-        header: ({column}) => (<DataTableColumnHeader column={column} title="Statut" />),
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Statut" />
+        ),
     },
     {
         accessorKey: 'is_send',
-        header: ({column}) => (<DataTableColumnHeader column={column} title="Transmis" />),
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Transmis" />
+        ),
     },
     {
         id: 'actions',
@@ -116,7 +140,7 @@ export const columns: ColumnDef<QuotationItem>[] = [
                             Suppression du DCI
                         </DropdownMenuItem>
                         <DropdownMenuItem>
-                            <Trash2 className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
+                            <Trash2 className="mr-2 h-3.5 w-3.5  text-muted-foreground/70" />
                             Suppression Dropbox + DCI
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
