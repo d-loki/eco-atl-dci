@@ -17,6 +17,7 @@ import TabButtons from '@/pages/quotation/edit/tab-buttons.tsx';
 import QuotationTabContext, {
     QuotationTabProvider,
 } from '@/context/quotation-tab-context.tsx';
+import BaseStep2 from '@/pages/quotation/edit/base-step-2.tsx';
 
 const EditQuotationPage = () => {
     return (
@@ -58,20 +59,7 @@ const ContentEditQuotationPage = () => {
                 </Card>
             </TabsContent>
             <TabsContent value="customer">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Informations client</CardTitle>
-                        <CardDescription>
-                            Ensemble des informations du client
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <p>INFOS CLIENT</p>
-                    </CardContent>
-                    <CardFooter className="space-x-2">
-                        <TabButtons />
-                    </CardFooter>
-                </Card>
+                <BaseStep2 />
             </TabsContent>
             <TabsContent value="housing">
                 <Card>
