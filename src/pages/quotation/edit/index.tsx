@@ -18,6 +18,7 @@ import QuotationTabContext, {
     QuotationTabProvider,
 } from '@/context/quotation-tab-context.tsx';
 import BaseStep2 from '@/pages/quotation/edit/base-step-2.tsx';
+import BaseStep4 from '@/pages/quotation/edit/base-step-4.tsx';
 
 const EditQuotationPage = () => {
     return (
@@ -78,17 +79,7 @@ const ContentEditQuotationPage = () => {
                 </Card>
             </TabsContent>
             <TabsContent value="quotation">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Données du devis</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <p>INFOS DEVIS</p>
-                    </CardContent>
-                    <CardFooter className="space-x-2">
-                        <TabButtons />
-                    </CardFooter>
-                </Card>
+                <BaseStep4 />
             </TabsContent>
             <TabsContent value="note_card">
                 <Card>
