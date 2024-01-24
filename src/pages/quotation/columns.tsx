@@ -20,6 +20,7 @@ import {
 
 import { Checkbox } from '@/components/ui/checkbox';
 import { DataTableColumnHeader } from '@/components/data-table/column-header.tsx';
+import { useNavigate } from 'react-router-dom';
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -111,7 +112,9 @@ export const columns: ColumnDef<QuotationItem>[] = [
     },
     {
         id: 'actions',
-        cell: () => {
+        cell: ({ row }) => {
+            const navigate = useNavigate();
+            const reference = row.getValue('reference');
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -122,7 +125,9 @@ export const columns: ColumnDef<QuotationItem>[] = [
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={() => navigate(`/devis/${reference}`)}
+                        >
                             <Pencil className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
                             Éditer
                         </DropdownMenuItem>

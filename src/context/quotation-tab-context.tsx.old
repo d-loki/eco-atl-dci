@@ -1,0 +1,70 @@
+import { createContext, FC, useState } from 'react';
+
+const defaultState = {
+    step: 'notice',
+};
+
+const defaultMethods = {
+    nextTab: () => {},
+    previousTab: () => {},
+    changeStep: () => {},
+};
+// QuotationTabContext : to query context state
+// QuotationStepperDispatchContext : to mutate context state
+const QuotationTabContext = createContext(defaultState);
+const QuotationTabDispatchContext = createContext(defaultMethods);
+
+// A "provider" is used to encapsulate only the
+// components that needs the state in this context
+// function QuotationTabProvider({ children }) {
+const QuotationTabProvider: FC<{ children: JSX.Element }> = ({ children }) => {
+    const [tab, setTab] = useState({
+        step: 'notice',
+    });
+    const tabs = ['notice', 'customer', 'housing', 'quotation', 'note_card'];
+
+    const changeStep = (value: string) => {
+        console.log('new step : ', value);
+        console.log(tab);
+        setTab({ step: value });
+    };
+
+    const nextTab = () => {
+        console.log('%c ON NEXT TAB', 'background: #fdd835; color: #000000');
+        const currentIndex = tabs.indexOf(tab.step);
+        if (currentIndex + 1 < tabs.length) {
+            changeStep(tabs[currentIndex + 1]);
+        }
+    };
+
+    const previousTab = () => {
+        console.log(
+            '%c ON PREVIOUS TAB',
+            'background: #fdd835; color: #000000'
+        );
+        const currentIndex = tabs.indexOf(tab.step);
+        if (currentIndex - 1 >= 0) {
+            changeStep(tabs[currentIndex - 1]);
+        }
+    };
+
+    const methods = {
+        nextTab,
+        previousTab,
+        changeStep,
+    };
+
+    return (
+        <QuotationTabContext.Provider value={tab}>
+            <QuotationTabDispatchContext.Provider value={methods}>
+                {children}
+            </QuotationTabDispatchContext.Provider>
+        </QuotationTabContext.Provider>
+    );
+};
+
+export {
+    QuotationTabContext,
+    QuotationTabDispatchContext,
+    QuotationTabProvider,
+};

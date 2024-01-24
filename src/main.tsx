@@ -10,6 +10,7 @@ import QuotationPage from '@/pages/quotation';
 import DashboardPage from '@/pages/dashboard';
 import CustomerPage from '@/pages/customer';
 import ParameterPage from '@/pages/parameter';
+import EditQuotationPage from '@/pages/quotation/edit';
 
 const router = createBrowserRouter([
     {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
             {
                 path: 'devis',
                 element: <QuotationPage />,
+            },
+            {
+                path: 'devis/:reference',
+                element: <EditQuotationPage />,
             },
             {
                 path: 'clients',
