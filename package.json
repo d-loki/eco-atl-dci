@@ -8,10 +8,13 @@
         "build": "tsc && vite build",
         "preview": "vite preview",
         "tauri": "tauri",
-        "prepare": "husky install"
+        "prepare": "husky install",
+        "lint": "eslint . --fix --max-warnings=0",
+        "format": "prettier . --write"
     },
     "lint-staged": {
-        "**/*": "prettier --write --ignore-unknown"
+        "*.{js,jsx,ts,tsx}": "pnpm lint",
+        "*.{js,jsx,ts,tsx,scss,css,md,html,json}": "pnpm format"
     },
     "dependencies": {
         "@radix-ui/react-alert-dialog": "^1.0.5",

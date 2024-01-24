@@ -17,11 +17,6 @@ const QuotationPage = () => {
         });
     }
 
-    const t = 'test';
-    const t = 'test';
-    const t = 'test';
-    const t = 'test';
-
     return (
         <div>
             <DataTable columns={columns} data={data} />
