@@ -41,7 +41,7 @@ const formSchema = z.object({
 
 const ParameterPage = () => {
     const defaultToken =
-        'oat_MQ.b1Jza1IwZndoWG5xakhmckhXNm9CN2tPZTd3aGVCZmRfTFJxTjNRajMwOTQ1OTM0Mw';
+        'oat_MQ.ejJ3Tl9sX0tFUWFWSEZMU3hPUW5rTFZwbTFBXzd3RUJGZEh5cTZ0azgyOTI5NTEzNg';
     const bearer = 'Bearer ' + defaultToken;
 
     const [isSending, setIsSending] = useState(false);
