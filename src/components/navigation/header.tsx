@@ -90,7 +90,7 @@ const Header = () => {
                     ) : (
                         <TooltipProvider>
                             <Tooltip>
-                                <TooltipTrigger>
+                                <TooltipTrigger asChild>
                                     <Button
                                         onClick={syncSettings}
                                         variant="outline"
@@ -107,7 +107,7 @@ const Header = () => {
                     )}
                     <TooltipProvider>
                         <Tooltip>
-                            <TooltipTrigger>
+                            <TooltipTrigger asChild>
                                 <Button variant="outline" size="icon" asChild>
                                     <a href="/parametres">
                                         <Settings2 size={18} />

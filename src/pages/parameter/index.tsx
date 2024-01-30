@@ -7,11 +7,9 @@ import {
     CardTitle,
 } from '@/components/ui/card.tsx';
 import { Button } from '@/components/ui/button.tsx';
-import { Input } from '@/components/ui/input.tsx';
-
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
     Form,
     FormControl,
@@ -21,12 +19,18 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form.tsx';
+import { Input } from '@/components/ui/input.tsx';
 import { Separator } from '@/components/ui/separator.tsx';
+import {
+    getCommercialInformations,
+    updateCommercialInformations,
+} from '@/services/ApiServices.ts';
 import { useEffect, useState } from 'react';
-import { ReloadIcon } from '@radix-ui/react-icons';
+import { setValueOnTauriStore } from '@/services/tauri-settings-store.ts';
 import { toast } from 'sonner';
 
 const authTokenRegex = new RegExp('oat_[A-Za-z0-9]+');
+
 const formSchema = z.object({
     auth_token: z
         .string()
@@ -34,23 +38,18 @@ const formSchema = z.object({
     dropbox_folder: z.string(),
     first_name: z.string(),
     last_name: z.string(),
-    email: z.string().email(),
+    email: z.string(),
     phone: z.string(),
     mobile_phone: z.string(),
 });
 
 const ParameterPage = () => {
-    const defaultToken =
-        'oat_MQ.ejJ3Tl9sX0tFUWFWSEZMU3hPUW5rTFZwbTFBXzd3RUJGZEh5cTZ0azgyOTI5NTEzNg';
-    const bearer = 'Bearer ' + defaultToken;
-
-    const [isSending, setIsSending] = useState(false);
-
-    // 1. Define your form.
+    console.log('%c RENDER', 'background: #FFFC7B; color: #000000');
+    const [commercialIsLogged, setCommercialIsLogged] = useState(false);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            auth_token: defaultToken,
+            auth_token: '',
             dropbox_folder: '',
             first_name: '',
             last_name: '',
@@ -60,53 +59,53 @@ const ParameterPage = () => {
         },
     });
 
-    // 2. Define a submit handler.
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
-        setIsSending(true);
-        const options = {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: bearer,
-            },
-            body: JSON.stringify(values),
-        };
-
-        fetch('http://localhost:3333/api/commercials/my-informations', options)
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
-                setTimeout(() => {
-                    setIsSending(false);
-                    toast.success('Vos informations ont été mises à jour');
-                }, 1000);
-            })
-            .catch((error) => {
-                console.error(error);
-                toast.error('Une erreur est survenue');
-                setIsSending(false);
-            });
-    };
-
     useEffect(() => {
-        fetch('http://localhost:3333/api/commercials/my-informations', {
-            method: 'GET',
-            headers: {
-                Authorization: bearer,
-            },
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
+        console.log('%c IN USE EFFECT√', 'background: #FF61C7; color: #000000');
+        return () => {
+            getCommercialInformations().then((data) => {
+                if (typeof data === 'string') {
+                    form.setValue('auth_token', data);
+                    return;
+                }
+                setCommercialIsLogged(true);
+
+                form.setValue('auth_token', data.auth_token ?? '');
                 form.setValue('dropbox_folder', data.dropbox_folder);
                 form.setValue('first_name', data.first_name);
                 form.setValue('last_name', data.last_name);
                 form.setValue('email', data.email);
                 form.setValue('phone', data.phone ?? '');
                 form.setValue('mobile_phone', data.mobile_phone ?? '');
-            })
-            .catch((error) => console.log(error));
+            });
+        };
     }, []);
+
+    // oat_MQ.ejJ3Tl9sX0tFUWFWSEZMU3hPUW5rTFZwbTFBXzd3RUJGZEh5cTZ0azgyOTI5NTEzNg
+
+    const onSubmit = async (data: z.infer<typeof formSchema>) => {
+        console.log(data);
+        await setValueOnTauriStore('auth_token', data.auth_token);
+
+        if (!commercialIsLogged) {
+            const response = await getCommercialInformations();
+            if (typeof response !== 'string') {
+                setCommercialIsLogged(true);
+                console.log('data', response);
+
+                form.setValue('auth_token', response.auth_token ?? '');
+                form.setValue('dropbox_folder', response.dropbox_folder);
+                form.setValue('first_name', response.first_name);
+                form.setValue('last_name', response.last_name);
+                form.setValue('email', response.email);
+                form.setValue('phone', response.phone ?? '');
+                form.setValue('mobile_phone', response.mobile_phone ?? '');
+            }
+        } else {
+            await updateCommercialInformations(data);
+        }
+
+        toast.success('Vos paramètres ont été mis à jour');
+    };
 
     return (
         <Form {...form}>
@@ -143,114 +142,112 @@ const ParameterPage = () => {
                                     </FormItem>
                                 )}
                             />
-                            <FormField
-                                control={form.control}
-                                name="dropbox_folder"
-                                render={({ field }) => (
-                                    <FormItem className="flex basis-1/2 flex-col">
-                                        <FormLabel>
-                                            Mon dossier dropbox
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder="John/Doe/MonDossier"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormDescription>
-                                            Ce dossier est utilisé pour stocker
-                                            vos fichiers sur Dropbox
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                            {commercialIsLogged && (
+                                <FormField
+                                    control={form.control}
+                                    name="dropbox_folder"
+                                    render={({ field }) => (
+                                        <FormItem className="flex basis-1/2 flex-col">
+                                            <FormLabel>
+                                                Mon dossier dropbox
+                                            </FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="John/Doe/MonDossier"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormDescription>
+                                                Ce dossier est utilisé pour
+                                                stocker vos fichiers sur Dropbox
+                                            </FormDescription>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            )}
                         </div>
-
-                        <Separator className="my-4" />
-                        <div className="my-8 flex flex-row space-x-8">
-                            <FormField
-                                control={form.control}
-                                name="first_name"
-                                render={({ field }) => (
-                                    <FormItem className="flex basis-1/2 flex-col">
-                                        <FormLabel>Prénom</FormLabel>
-                                        <FormControl>
-                                            <Input {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="last_name"
-                                render={({ field }) => (
-                                    <FormItem className="flex basis-1/2 flex-col">
-                                        <FormLabel>Nom</FormLabel>
-                                        <FormControl>
-                                            <Input {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-
-                        <div className="my-8 flex flex-row space-x-8">
-                            <FormField
-                                control={form.control}
-                                name="email"
-                                render={({ field }) => (
-                                    <FormItem className="flex basis-1/2 flex-col">
-                                        <FormLabel>Email</FormLabel>
-                                        <FormControl>
-                                            <Input {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-
-                        <div className="my-8 flex flex-row space-x-8">
-                            <FormField
-                                control={form.control}
-                                name="phone"
-                                render={({ field }) => (
-                                    <FormItem className="flex basis-1/2 flex-col">
-                                        <FormLabel>Téléphone</FormLabel>
-                                        <FormControl>
-                                            <Input {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="mobile_phone"
-                                render={({ field }) => (
-                                    <FormItem className="flex basis-1/2 flex-col">
-                                        <FormLabel>Téléphone mobile</FormLabel>
-                                        <FormControl>
-                                            <Input {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
+                        {commercialIsLogged && (
+                            <>
+                                <Separator className="my-4" />
+                                <div className="my-8 flex flex-row space-x-8">
+                                    <FormField
+                                        control={form.control}
+                                        name="first_name"
+                                        render={({ field }) => (
+                                            <FormItem className="flex basis-1/2 flex-col">
+                                                <FormLabel>Prénom</FormLabel>
+                                                <FormControl>
+                                                    <Input {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="last_name"
+                                        render={({ field }) => (
+                                            <FormItem className="flex basis-1/2 flex-col">
+                                                <FormLabel>Nom</FormLabel>
+                                                <FormControl>
+                                                    <Input {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                                <div className="my-8 flex flex-row space-x-8">
+                                    <FormField
+                                        control={form.control}
+                                        name="email"
+                                        render={({ field }) => (
+                                            <FormItem className="flex basis-1/2 flex-col">
+                                                <FormLabel>Email</FormLabel>
+                                                <FormControl>
+                                                    <Input {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                                <div className="my-8 flex flex-row space-x-8">
+                                    <FormField
+                                        control={form.control}
+                                        name="phone"
+                                        render={({ field }) => (
+                                            <FormItem className="flex basis-1/2 flex-col">
+                                                <FormLabel>Téléphone</FormLabel>
+                                                <FormControl>
+                                                    <Input {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="mobile_phone"
+                                        render={({ field }) => (
+                                            <FormItem className="flex basis-1/2 flex-col">
+                                                <FormLabel>
+                                                    Téléphone mobile
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <Input {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                            </>
+                        )}
                     </CardContent>
                     <CardFooter>
-                        {isSending ? (
-                            <Button disabled>
-                                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                                Veuillez patienter
-                            </Button>
-                        ) : (
-                            <Button type="submit">Mettre à jour</Button>
-                        )}
+                        <Button type="submit">Mettre à jour</Button>
                     </CardFooter>
                 </Card>
             </form>
