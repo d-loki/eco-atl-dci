@@ -63,10 +63,14 @@ const QuotationPage = () => {
         getQuotations().then((quotations) => {
             const data: QuotationItem[] = [];
             quotations.forEach((quotation) => {
+                let customer = `${quotation.customer_first_name} ${quotation.customer_last_name}`;
+                if (quotation.customer_first_name === null) {
+                    customer = '';
+                }
                 data.push({
                     reference: quotation.reference,
                     type: quotation.type,
-                    customer: 'EMPTY',
+                    customer: customer,
                     total: quotation.total,
                     created_at: quotation.created_at,
                     status: 'pending',

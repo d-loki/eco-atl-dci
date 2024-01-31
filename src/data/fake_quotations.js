@@ -24,7 +24,7 @@ function getRandomPastDate() {
 function generateFile() {
     const nbQuotations = 1000;
     const quotations = [];
-    for (let i = 0; i < nbQuotations; i++) {
+    for (let i = 1; i <= nbQuotations; i++) {
         const quotation = {
             id: i,
             reference: getRandomAlphaNumeric(10),
@@ -40,14 +40,15 @@ function generateFile() {
             total: Math.floor(Math.random() * 10000),
             created_at: getRandomPastDate(),
             send_at: Math.random() >= 0.5 ? getRandomPastDate() : null,
+            customer_id: i,
         };
         quotations.push(quotation);
     }
-    const sql = `INSERT INTO quotations (id, reference, type, total, created_at, send_at) VALUES
+    const sql = `INSERT INTO quotations (id, customer_id, reference, type, total, created_at, send_at) VALUES
     ${quotations
         .map(
             (quotation) =>
-                `(${quotation.id}, '${quotation.reference}', '${quotation.type}', ${quotation.total}, '${quotation.created_at}', ${
+                `(${quotation.id}, ${quotation.customer_id}, '${quotation.reference}', '${quotation.type}', ${quotation.total}, '${quotation.created_at}', ${
                     quotation.send_at === null
                         ? 'NULL'
                         : `'${quotation.send_at}'`

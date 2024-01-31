@@ -1,5 +1,6 @@
 import Database from 'tauri-plugin-sql-api';
 import { z } from 'zod';
+import { toast } from 'sonner';
 
 async function loadDatabase(): Promise<Database> {
     return await Database.load('sqlite:database.db');
@@ -13,21 +14,25 @@ const countQuotationSchema = z.array(
 
 const quotationSchema = z.array(
     z.object({
-        id: z.number(),
         reference: z.string(),
         type: z.string(),
         total: z.number(),
         created_at: z.string(),
         send_at: z.string().nullable(),
+        customer_first_name: z.string().nullable(),
+        customer_last_name: z.string().nullable(),
     })
 );
 type Quotations = z.infer<typeof quotationSchema>;
 export async function getQuotations(): Promise<Quotations> {
     const db = await loadDatabase();
-    const response = await db.select('SELECT * FROM quotations');
+    const response = await db.select(
+        'SELECT q.reference, q.type, q.total, q.created_at, q.send_at, c.first_name as customer_first_name, c.last_name as customer_last_name FROM quotations as q LEFT JOIN customers as c ON q.customer_id = c.id'
+    );
     const result = quotationSchema.safeParse(response);
 
     if (!result.success) {
+        toast.error('Impossible de récupérer les devis');
         return [];
     } else {
         return result.data;
