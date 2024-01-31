@@ -11,6 +11,29 @@ const countQuotationSchema = z.array(
     })
 );
 
+const quotationSchema = z.array(
+    z.object({
+        id: z.number(),
+        reference: z.string(),
+        type: z.string(),
+        total: z.number(),
+        created_at: z.string(),
+        send_at: z.string().nullable(),
+    })
+);
+type Quotations = z.infer<typeof quotationSchema>;
+export async function getQuotations(): Promise<Quotations> {
+    const db = await loadDatabase();
+    const response = await db.select('SELECT * FROM quotations');
+    const result = quotationSchema.safeParse(response);
+
+    if (!result.success) {
+        return [];
+    } else {
+        return result.data;
+    }
+}
+
 export async function countQuotationsLast30Days(): Promise<number> {
     const db = await loadDatabase();
     const response = await db.select(

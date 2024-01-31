@@ -29,6 +29,8 @@ import {
     SelectValue,
 } from '@/components/ui/select.tsx';
 import { Switch } from '@/components/ui/switch.tsx';
+import { useEffect, useState } from 'react';
+import { getQuotations } from '@/services/database-services.ts';
 
 const formSchema = z.object({
     type: z.string().nonempty(),
@@ -39,6 +41,7 @@ const formSchema = z.object({
 });
 
 const QuotationPage = () => {
+    const [quotations, setQuotations] = useState<QuotationItem[]>([]);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -56,20 +59,24 @@ const QuotationPage = () => {
         console.log(values);
     };
 
-    const data: QuotationItem[] = [];
+    useEffect(() => {
+        getQuotations().then((quotations) => {
+            const data: QuotationItem[] = [];
+            quotations.forEach((quotation) => {
+                data.push({
+                    reference: quotation.reference,
+                    type: quotation.type,
+                    customer: 'EMPTY',
+                    total: quotation.total,
+                    created_at: quotation.created_at,
+                    status: 'pending',
+                    is_send: quotation.send_at !== null,
+                });
+            });
 
-    for (let i = 0; i < 100; i++) {
-        const key = Math.random().toString(36).substring(7);
-        data.push({
-            reference: `GB4-${key}-CET`,
-            type: 'cet',
-            customer: 'John Doe',
-            total: Math.floor(Math.random() * 100),
-            created_at: '2021-01-01',
-            status: 'pending',
-            is_send: false,
+            setQuotations(data);
         });
-    }
+    }, []);
 
     return (
         <div>
@@ -205,7 +212,7 @@ const QuotationPage = () => {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-            <DataTable columns={columns} data={data} />
+            <DataTable columns={columns} data={quotations} />
         </div>
     );
 };

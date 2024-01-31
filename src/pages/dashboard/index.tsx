@@ -21,7 +21,6 @@ const DashboardPage = () => {
     useEffect(() => {
         return () => {
             countQuotationsLast30Days().then((count) => {
-                console.log(count);
                 setQuotationsLast30Days(count);
             });
 
