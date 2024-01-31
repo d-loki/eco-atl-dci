@@ -29,7 +29,7 @@ fn main() {
                   type TEXT NOT NULL,
                   total INTEGER NOT NULL,
                   created_at TEXT NOT NULL,
-                  send_at TEXT NOT NULL,
+                  send_at TEXT,
                   FOREIGN KEY (customer_id) REFERENCES customers(id)
               );",
         kind: MigrationKind::Up,

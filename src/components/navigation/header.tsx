@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/tooltip.tsx';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert.tsx';
 import NetworkContext from '@/context/network-context.tsx';
-import { getAppConfig } from '@/services/ApiServices.ts';
+import { getAppConfig } from '@/services/api-services.ts';
 import { toast } from 'sonner';
 
 const Header = () => {

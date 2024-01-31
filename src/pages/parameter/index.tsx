@@ -24,7 +24,7 @@ import { Separator } from '@/components/ui/separator.tsx';
 import {
     getCommercialInformations,
     updateCommercialInformations,
-} from '@/services/ApiServices.ts';
+} from '@/services/api-services.ts';
 import { useEffect, useState } from 'react';
 import { setValueOnTauriStore } from '@/services/tauri-settings-store.ts';
 import { toast } from 'sonner';
