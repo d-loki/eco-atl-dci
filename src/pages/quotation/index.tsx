@@ -30,9 +30,12 @@ import {
 import { Switch } from '@/components/ui/switch.tsx';
 import { useEffect, useState } from 'react';
 import { getQuotations } from '@/services/database-services.ts';
+import { createFolder } from '@/services/folder-services.ts';
+import { Input } from '@/components/ui/input.tsx';
 
 const formSchema = z.object({
     type: z.string().min(1, 'Veuillez sélectionner un type de chantier'),
+    customer: z.string().min(1, 'Veuillez indiquer le nom client'),
     disabled_cee: z.boolean(),
     disabled_ma_prime_renov: z.boolean(),
 });
@@ -43,16 +46,18 @@ const QuotationPage = () => {
         resolver: zodResolver(formSchema),
         defaultValues: {
             type: '',
+            customer: '',
             disabled_cee: false,
             disabled_ma_prime_renov: false,
         },
     });
 
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
         console.log('%c ON SUBMIT', 'background: #fdd835; color: #000000');
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
         console.log(values);
+        await createFolder(values.type, values.customer);
     };
 
     useEffect(() => {
@@ -137,6 +142,23 @@ const QuotationPage = () => {
                                                 </SelectItem>
                                             </SelectContent>
                                         </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="customer"
+                                render={({ field }) => (
+                                    <FormItem className="basis-1/3">
+                                        <FormLabel>Client</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="John Doe"
+                                                {...field}
+                                            />
+                                        </FormControl>
+
                                         <FormMessage />
                                     </FormItem>
                                 )}
