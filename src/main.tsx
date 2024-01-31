@@ -11,6 +11,7 @@ import DashboardPage from '@/pages/dashboard';
 import CustomerPage from '@/pages/customer';
 import ParameterPage from '@/pages/parameter';
 import EditQuotationPage from '@/pages/quotation/edit';
+import { NetworkProvider } from '@/context/network-context.tsx';
 
 const router = createBrowserRouter([
     {
@@ -45,8 +46,10 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
         <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-            <RouterProvider router={router} />
-            <Toaster position="bottom-right" richColors={true} />
+            <NetworkProvider>
+                <RouterProvider router={router} />
+                <Toaster position="bottom-right" richColors={true} />
+            </NetworkProvider>
         </ThemeProvider>
     </React.StrictMode>
 );

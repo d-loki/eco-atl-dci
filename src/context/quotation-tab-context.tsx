@@ -1,4 +1,4 @@
-import { createContext, FC, JSX, useEffect, useState } from 'react';
+import { createContext, FC, ReactNode, useEffect, useState } from 'react';
 
 interface QuotationTabContext {
     step: string;
@@ -20,7 +20,7 @@ const QuotationTabContext = createContext<QuotationTabContext>({
 
 export default QuotationTabContext;
 
-const QuotationTabProvider: FC<{ children: JSX.Element }> = ({ children }) => {
+const QuotationTabProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [step, setStep] = useState('notice');
     const [hasPreviousStep, setHasPreviousStep] = useState(false);
     const [hasNextStep, setHasNextStep] = useState(false);
