@@ -22,6 +22,13 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input.tsx';
 import { DataTablePagination } from '@/components/data-table/pagination.tsx';
 import { DataTableViewOptions } from '@/components/data-table/column-toggle.tsx';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select.tsx';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -59,7 +66,7 @@ export function DataTable<TData, TValue>({
 
     return (
         <div>
-            <div className="flex items-center py-4">
+            <div className="flex items-center space-x-2 py-4">
                 <Input
                     placeholder="Référence"
                     value={
@@ -72,36 +79,71 @@ export function DataTable<TData, TValue>({
                             .getColumn('reference')
                             ?.setFilterValue(event.target.value)
                     }
-                    className="max-w-sm"
+                    className="basis-1/4"
                 />
                 <Input
-                    placeholder="Type"
-                    value={
-                        (table.getColumn('type')?.getFilterValue() as string) ??
-                        ''
-                    }
-                    onChange={(event) =>
-                        table
-                            .getColumn('type')
-                            ?.setFilterValue(event.target.value)
-                    }
-                    className="ml-4 max-w-sm"
-                />
-                <Input
-                    placeholder="Statut"
+                    placeholder="Client"
                     value={
                         (table
-                            .getColumn('status')
+                            .getColumn('customer')
                             ?.getFilterValue() as string) ?? ''
                     }
                     onChange={(event) =>
                         table
-                            .getColumn('status')
+                            .getColumn('customer')
                             ?.setFilterValue(event.target.value)
                     }
-                    className="ml-4 max-w-sm"
+                    className="basis-1/4"
                 />
-                <DataTableViewOptions table={table} />
+                <div className="basis-1/4">
+                    <Select
+                        value={
+                            (table
+                                .getColumn('type')
+                                ?.getFilterValue() as string) ?? ''
+                        }
+                        onValueChange={(value) => {
+                            if (value === 'all') {
+                                return table
+                                    .getColumn('type')
+                                    ?.setFilterValue(undefined);
+                            }
+                            return table
+                                .getColumn('type')
+                                ?.setFilterValue(value);
+                        }}
+                    >
+                        <SelectTrigger>
+                            <SelectValue placeholder="Sélectionner un type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">Tous les types</SelectItem>
+                            <SelectItem value="pv">
+                                Panneaux photovoltaïques
+                            </SelectItem>
+                            <SelectItem value="pg">Poêle à granulés</SelectItem>
+                            <SelectItem value="sol">
+                                Isolation des sols
+                            </SelectItem>
+                            <SelectItem value="cet">
+                                Chauffe-eau thermodynamique
+                            </SelectItem>
+                            <SelectItem value="comble">
+                                Isolation des combles
+                            </SelectItem>
+                            <SelectItem value="pac_rr">
+                                Pompe à chaleur air/air
+                            </SelectItem>
+                            <SelectItem value="pac_ro">
+                                Pompe à chaleur air/eau
+                            </SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+
+                <div className="grow">
+                    <DataTableViewOptions table={table} />
+                </div>
             </div>
 
             <div className="rounded-md border">
@@ -150,7 +192,7 @@ export function DataTable<TData, TValue>({
                                     colSpan={columns.length}
                                     className="h-24 text-center"
                                 >
-                                    No results.
+                                    Pas de résultats.
                                 </TableCell>
                             </TableRow>
                         )}

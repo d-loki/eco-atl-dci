@@ -27,7 +27,7 @@ type Quotations = z.infer<typeof quotationSchema>;
 export async function getQuotations(): Promise<Quotations> {
     const db = await loadDatabase();
     const response = await db.select(
-        'SELECT q.reference, q.type, q.total, q.created_at, q.send_at, c.first_name as customer_first_name, c.last_name as customer_last_name FROM quotations as q LEFT JOIN customers as c ON q.customer_id = c.id'
+        'SELECT q.reference, q.type, q.total, q.created_at, q.send_at, c.first_name as customer_first_name, c.last_name as customer_last_name FROM quotations as q LEFT JOIN customers as c ON q.customer_id = c.id ORDER BY q.created_at DESC'
     );
     const result = quotationSchema.safeParse(response);
 

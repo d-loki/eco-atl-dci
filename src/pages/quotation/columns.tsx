@@ -21,6 +21,8 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import { DataTableColumnHeader } from '@/components/data-table/column-header.tsx';
 import { useNavigate } from 'react-router-dom';
+import { Badge } from '@/components/ui/badge.tsx';
+import { format } from 'date-fns';
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -30,7 +32,6 @@ export type QuotationItem = {
     customer: string;
     total: number;
     created_at: string;
-    status: 'pending' | 'processing' | 'success' | 'failed';
     is_send: boolean;
 };
 
@@ -70,6 +71,35 @@ export const columns: ColumnDef<QuotationItem>[] = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Type" />
         ),
+        cell: ({ row }) => {
+            const slug = row.getValue('type');
+            // TODO : Faire la logique en récupérant les données de l'ERP ou via constante dans le DCO
+            let value = '';
+            switch (slug) {
+                case 'pv':
+                    value = 'Panneaux photovoltaïques';
+                    break;
+                case 'sol':
+                    value = 'Isolation des sols';
+                    break;
+                case 'comble':
+                    value = 'Isolation des combles';
+                    break;
+                case 'pac_rr':
+                    value = 'Pompe à chaleur air/air';
+                    break;
+                case 'pac_ro':
+                    value = 'Pompe à chaleur air/eau';
+                    break;
+                case 'cet':
+                    value = 'Chauffe-eau thermodynamique';
+                    break;
+                case 'pg':
+                    value = 'Poêle à granulés';
+                    break;
+            }
+            return <Badge variant="outline">{value}</Badge>;
+        },
     },
     {
         accessorKey: 'customer',
@@ -83,7 +113,8 @@ export const columns: ColumnDef<QuotationItem>[] = [
             <DataTableColumnHeader column={column} title="Total" />
         ),
         cell: ({ row }) => {
-            const amount = parseFloat(row.getValue('total'));
+            let amount = row.getValue<number>('total');
+            amount = amount / 100;
             const formatted = new Intl.NumberFormat('fr-FR', {
                 style: 'currency',
                 currency: 'EUR',
@@ -97,18 +128,25 @@ export const columns: ColumnDef<QuotationItem>[] = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Crée le" />
         ),
-    },
-    {
-        accessorKey: 'status',
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Statut" />
-        ),
+        cell: ({ row }) => {
+            const date = row.getValue<string>('created_at');
+            const formatted = format(new Date(date), 'dd/MM/yyyy');
+
+            return <div className="font-medium">{formatted}</div>;
+        },
     },
     {
         accessorKey: 'is_send',
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Transmis" />
         ),
+        cell: ({ row }) => {
+            const value = row.getValue('is_send');
+            if (value) {
+                return <Badge variant="success">Transmis</Badge>;
+            }
+            return <Badge variant="destructive">Non transmis</Badge>;
+        },
     },
     {
         id: 'actions',

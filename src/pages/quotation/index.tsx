@@ -73,7 +73,6 @@ const QuotationPage = () => {
                     customer: customer,
                     total: quotation.total,
                     created_at: quotation.created_at,
-                    status: 'pending',
                     is_send: quotation.send_at !== null,
                 });
             });

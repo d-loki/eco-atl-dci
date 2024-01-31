@@ -37,7 +37,7 @@ function generateFile() {
                 'pg',
                 'pv',
             ]),
-            total: Math.floor(Math.random() * 10000),
+            total: Math.floor(Math.random() * 10000 * 100),
             created_at: getRandomPastDate(),
             send_at: Math.random() >= 0.5 ? getRandomPastDate() : null,
             customer_id: i,
