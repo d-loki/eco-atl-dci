@@ -11,6 +11,7 @@ export async function getValueFromTauriStore<T>(
 
 export async function setValueOnTauriStore<T>(key: string, value: T) {
     await store.set(key, value);
+    await store.save();
 }
 
 export async function forceTauriStoreSave() {

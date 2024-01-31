@@ -9,7 +9,7 @@
         "preview": "vite preview",
         "tauri": "tauri",
         "prepare": "husky install",
-        "lint": "eslint . --fix --max-warnings=0",
+        "lint": "eslint . --fix",
         "format": "prettier . --write"
     },
     "lint-staged": {

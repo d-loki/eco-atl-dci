@@ -28,6 +28,8 @@ import {
 import { useEffect, useState } from 'react';
 import { setValueOnTauriStore } from '@/services/tauri-settings-store.ts';
 import { toast } from 'sonner';
+import { open } from '@tauri-apps/api/dialog';
+import { FolderOpen } from 'lucide-react';
 
 const authTokenRegex = new RegExp('oat_[A-Za-z0-9]+');
 
@@ -44,7 +46,6 @@ const formSchema = z.object({
 });
 
 const ParameterPage = () => {
-    console.log('%c RENDER', 'background: #FFFC7B; color: #000000');
     const [commercialIsLogged, setCommercialIsLogged] = useState(false);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -60,7 +61,6 @@ const ParameterPage = () => {
     });
 
     useEffect(() => {
-        console.log('%c IN USE EFFECT√', 'background: #FF61C7; color: #000000');
         return () => {
             getCommercialInformations().then((data) => {
                 if (typeof data === 'string') {
@@ -81,14 +81,20 @@ const ParameterPage = () => {
     }, []);
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
-        console.log(data);
         await setValueOnTauriStore('auth_token', data.auth_token);
+        await setValueOnTauriStore('dropbox_folder', data.dropbox_folder);
+        await setValueOnTauriStore('commercial', {
+            first_name: data.first_name,
+            last_name: data.last_name,
+            email: data.email,
+            phone: data.phone,
+            mobile_phone: data.mobile_phone,
+        });
 
         if (!commercialIsLogged) {
             const response = await getCommercialInformations();
             if (typeof response !== 'string') {
                 setCommercialIsLogged(true);
-                console.log('data', response);
 
                 form.setValue('auth_token', response.auth_token ?? '');
                 form.setValue('dropbox_folder', response.dropbox_folder);
@@ -105,6 +111,24 @@ const ParameterPage = () => {
         toast.success('Vos paramètres ont été mis à jour');
     };
 
+    const selectDropboxFolder = async () => {
+        const selected = await open({
+            directory: true,
+            multiple: false,
+            title: 'Sélectionner un dossier',
+        });
+
+        if (selected === null) {
+            return;
+        }
+
+        if (Array.isArray(selected)) {
+            toast.error('Vous devez sélectionner un dossier');
+        } else {
+            form.setValue('dropbox_folder', selected);
+        }
+    };
+
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -116,44 +140,57 @@ const ParameterPage = () => {
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="my-8 flex flex-row space-x-8">
-                            <FormField
-                                control={form.control}
-                                name="auth_token"
-                                render={({ field }) => (
-                                    <FormItem className="flex basis-1/2 flex-col">
-                                        <FormLabel>
-                                            Ma clé d&apos;identification
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder="eD5v2LWDFjcY1Sz4i0du4Jpp9S8zpvGF"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormDescription>
-                                            Cette clé est utilisée pour
-                                            identifier votre compte sur
-                                            l&apos;ERP
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            {commercialIsLogged && (
+                        <FormField
+                            control={form.control}
+                            name="auth_token"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Ma clé d&apos;identification
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            placeholder="eD5v2LWDFjcY1Sz4i0du4Jpp9S8zpvGF"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Cette clé est utilisée pour identifier
+                                        votre compte sur l&apos;ERP
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        {commercialIsLogged && (
+                            <>
+                                <Separator className="my-4" />
                                 <FormField
                                     control={form.control}
                                     name="dropbox_folder"
                                     render={({ field }) => (
-                                        <FormItem className="flex basis-1/2 flex-col">
+                                        <FormItem>
                                             <FormLabel>
                                                 Mon dossier dropbox
                                             </FormLabel>
                                             <FormControl>
-                                                <Input
-                                                    placeholder="John/Doe/MonDossier"
-                                                    {...field}
-                                                />
+                                                <div className="flex w-full items-center space-x-2">
+                                                    <Input
+                                                        disabled
+                                                        placeholder="John/Doe/MonDossier"
+                                                        {...field}
+                                                    />
+
+                                                    <Button
+                                                        onClick={
+                                                            selectDropboxFolder
+                                                        }
+                                                        type="button"
+                                                    >
+                                                        <FolderOpen className="mr-2 h-4 w-4" />{' '}
+                                                        Sélectionner
+                                                    </Button>
+                                                </div>
                                             </FormControl>
                                             <FormDescription>
                                                 Ce dossier est utilisé pour
@@ -163,10 +200,7 @@ const ParameterPage = () => {
                                         </FormItem>
                                     )}
                                 />
-                            )}
-                        </div>
-                        {commercialIsLogged && (
-                            <>
+
                                 <Separator className="my-4" />
                                 <div className="my-8 flex flex-row space-x-8">
                                     <FormField
