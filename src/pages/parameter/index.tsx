@@ -80,8 +80,6 @@ const ParameterPage = () => {
         };
     }, []);
 
-    // oat_MQ.ejJ3Tl9sX0tFUWFWSEZMU3hPUW5rTFZwbTFBXzd3RUJGZEh5cTZ0azgyOTI5NTEzNg
-
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         console.log(data);
         await setValueOnTauriStore('auth_token', data.auth_token);

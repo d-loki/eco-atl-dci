@@ -2,6 +2,7 @@ import ky, { HTTPError } from 'ky';
 import { getValueFromTauriStore } from '@/services/tauri-settings-store.ts';
 import { toast } from 'sonner';
 import { Commercial, commercialSchema } from '@/types/commercial.ts';
+import { z } from 'zod';
 
 const baseUrl = 'http://localhost:3333/api/';
 
@@ -57,6 +58,32 @@ export async function updateCommercialInformations(
         toast.error("Impossible de se connecter à l'ERP");
         throw new Error("Impossible de se connecter à l'ERP");
     }
+}
+
+const configSchema = z.object({
+    key: z.string(),
+    type: z.string(),
+    value: z.unknown(),
+    description: z.string().nullable(),
+    created_at: z.string().nullable(),
+    updated_at: z.string().nullable(),
+});
+
+type ConfigType = z.infer<typeof configSchema>;
+
+export async function getAppConfig(): Promise<ConfigType[]> {
+    const response = await get<ConfigType[]>('dci-settings');
+    response.forEach((config) => {
+        const result = configSchema.safeParse(config);
+        if (!result.success) {
+            console.log('config : ', config);
+            console.log(result.error);
+            toast.error('Les informations de configuration sont invalides');
+            throw new Error('Les informations de configuration sont invalides');
+        }
+    });
+
+    return response;
 }
 
 async function getBearerToken(): Promise<string> {

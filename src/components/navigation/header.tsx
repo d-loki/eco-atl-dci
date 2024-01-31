@@ -9,7 +9,6 @@ import { ModeToggle } from '@/components/mode-toggle.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { AlertTriangle, RefreshCw, Settings2 } from 'lucide-react';
 import { useContext, useState } from 'react';
-import { toast } from 'sonner';
 import {
     Tooltip,
     TooltipContent,
@@ -18,39 +17,19 @@ import {
 } from '@/components/ui/tooltip.tsx';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert.tsx';
 import NetworkContext from '@/context/network-context.tsx';
+import { getAppConfig } from '@/services/ApiServices.ts';
+import { toast } from 'sonner';
 
 const Header = () => {
     const { isOnline } = useContext(NetworkContext);
 
     const [isSyncing, setIsSyncing] = useState(false);
-    const syncSettings = () => {
+    const syncSettings = async () => {
         setIsSyncing(true);
-        const defaultToken =
-            'oat_MQ.ejJ3Tl9sX0tFUWFWSEZMU3hPUW5rTFZwbTFBXzd3RUJGZEh5cTZ0azgyOTI5NTEzNg';
-        const bearer = 'Bearer ' + defaultToken;
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log('sync');
-
-        fetch('http://localhost:3333/api/dci-settings', {
-            method: 'GET',
-            headers: {
-                Authorization: bearer,
-            },
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
-                setTimeout(() => {
-                    setIsSyncing(false);
-                    toast.success('Les informations ont été mises à jour');
-                }, 2500);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                setIsSyncing(false);
-                toast.error('Une erreur est survenue');
-            });
+        const configs = await getAppConfig();
+        console.log(configs);
+        setIsSyncing(false);
+        toast.success('Synchronisation terminée');
     };
 
     return (
