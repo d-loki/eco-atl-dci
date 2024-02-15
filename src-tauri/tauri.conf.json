@@ -7,18 +7,18 @@
         "distDir":            "../dist"
     },
     "package": {
-        "productName": "DCI - Eco Atlantic",
-        "version":     "0.1.0"
+        "productName": "DCI-EcoAtlantic",
+        "version":     "0.0.1"
     },
     "tauri":   {
         "allowlist": {
             "dialog": {
-                "all":     false,
-                "ask":     false,
-                "confirm": false,
-                "message": false,
+                "all":     true,
+                "ask":     true,
+                "confirm": true,
+                "message": true,
                 "open":    true,
-                "save":    false
+                "save":    true
             },
             "fs":     {
                 "all":        true,
@@ -76,14 +76,22 @@
             "csp": null
         },
         "updater":   {
-            "active": false
+            "windows":   {
+                "installMode": "basicUi"
+            },
+            "active":    true,
+            "endpoints": [
+                "http://localhost:3333/tauri-update/{{target}}/{{current_version}}"
+            ],
+            "dialog":    true,
+            "pubkey":    "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDE3MTUzM0E3OEE0NjlFQjAKUldTd25rYUtwek1WRjN5a1BtVzVyMUJyOXVXVTFJai9UMjlmRFluVVhVQ3R0M3lpM2VIZkhkbE4K%"
         },
         "windows":   [
             {
                 "fullscreen": false,
                 "height":     600,
                 "resizable":  true,
-                "title":      "DCI",
+                "title":      "DCI - Eco Atlantic",
                 "width":      800
             }
         ]
