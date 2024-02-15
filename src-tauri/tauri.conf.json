@@ -7,7 +7,7 @@
         "distDir":            "../dist"
     },
     "package": {
-        "productName": "dci",
+        "productName": "DCI - Eco Atlantic",
         "version":     "0.1.0"
     },
     "tauri":   {
@@ -21,19 +21,21 @@
                 "save":    false
             },
             "fs":     {
-                "all": true,
-                "readFile": true,
-                "writeFile": true,
-                "readDir": true,
-                "copyFile": true,
-                "createDir": true,
-                "removeDir": true,
+                "all":        true,
+                "readFile":   true,
+                "writeFile":  true,
+                "readDir":    true,
+                "copyFile":   true,
+                "createDir":  true,
+                "removeDir":  true,
                 "removeFile": true,
                 "renameFile": true,
-                "exists": true,
-                "scope": ["$HOME/**"]
+                "exists":     true,
+                "scope":      [
+                    "$HOME/**"
+                ]
             },
-            "path": {
+            "path":   {
                 "all": true
             }
         },
@@ -52,7 +54,7 @@
                 "icons/icon.icns",
                 "icons/icon.ico"
             ],
-            "identifier":       "com.tauri.dev",
+            "identifier":       "fr.ecoatlantique.dci",
             "longDescription":  "",
             "macOS":            {
                 "entitlements":      null,
