@@ -81,7 +81,7 @@
             },
             "active":    true,
             "endpoints": [
-                "http://localhost:3333/tauri-update/{{target}}/{{current_version}}"
+                "https://localhost:3333/tauri-update/{{target}}/{{current_version}}"
             ],
             "dialog":    true,
             "pubkey":    "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDE3MTUzM0E3OEE0NjlFQjAKUldTd25rYUtwek1WRjN5a1BtVzVyMUJyOXVXVTFJai9UMjlmRFluVVhVQ3R0M3lpM2VIZkhkbE4K%"
