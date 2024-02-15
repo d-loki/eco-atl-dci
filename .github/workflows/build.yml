@@ -29,7 +29,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [macos-latest, ubuntu-latest, windows-latest]
+        platform: [ macos-latest, windows-latest ]
     runs-on: ${{ matrix.platform }}
     needs: changelog
     steps:
@@ -42,24 +42,19 @@ jobs:
         uses: actions/setup-node@v4
         # NOTE: enterprise developers may hard code a version
         with:
-#          node-version: latest
-          node-version: 20.9.0
-#           node-version-file: '.nvmrc'
+          node-version-file: '.nvmrc'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
 
       - name: Setup Rust
         run: |
           rustup update --no-self-update
 
-      - name: Install Ubuntu dependencies
-        if: matrix.platform == 'ubuntu-latest'
-        run: |
-          sudo apt update
-          xargs sudo apt install -y < environment/apt_packages.txt
-
       - name: Build frontend
         run: |
-          yarn --frozen-lockfile
-          yarn build
+          pnpm install --frozen-lockfile
+          pnpm build
 
       - name: Build Tauri app
         uses: tauri-apps/tauri-action@v0
