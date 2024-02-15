@@ -7,12 +7,12 @@
         "distDir":            "../dist"
     },
     "package": {
-        "productName": "DCI-EcoAtlantic",
-        "version":     "0.0.2"
+        "productName": "DCI",
+        "version":     "../package.json"
     },
     "tauri":   {
         "allowlist": {
-            "dialog": {
+            "dialog":  {
                 "all":     true,
                 "ask":     true,
                 "confirm": true,
@@ -20,7 +20,7 @@
                 "open":    true,
                 "save":    true
             },
-            "fs":     {
+            "fs":      {
                 "all":        true,
                 "readFile":   true,
                 "writeFile":  true,
@@ -35,18 +35,25 @@
                     "$HOME/**"
                 ]
             },
-            "path":   {
+            "process": {
+                "all":                                false,
+                "exit":                               false,
+                "relaunch":                           true,
+                "relaunchDangerousAllowSymlinkMacos": false
+            },
+            "path":    {
                 "all": true
             }
         },
         "bundle":    {
             "active":           true,
+            "targets":          "all",
+            "identifier":       "fr.ecoatlantique.dci",
+            "publisher":        "Unknown Publisher",
+            "copyright":        "Copyright Notice",
             "category":         "DeveloperTool",
-            "copyright":        "",
-            "deb":              {
-                "depends": []
-            },
-            "externalBin":      [],
+            "shortDescription": "",
+            "longDescription":  "",
             "icon":             [
                 "icons/32x32.png",
                 "icons/128x128.png",
@@ -54,8 +61,11 @@
                 "icons/icon.icns",
                 "icons/icon.ico"
             ],
-            "identifier":       "fr.ecoatlantique.dci",
-            "longDescription":  "",
+            "resources":        [],
+            "externalBin":      [],
+            "deb":              {
+                "depends": []
+            },
             "macOS":            {
                 "entitlements":      null,
                 "exceptionDomain":   "",
@@ -63,9 +73,6 @@
                 "providerShortName": null,
                 "signingIdentity":   null
             },
-            "resources":        [],
-            "shortDescription": "",
-            "targets":          "all",
             "windows":          {
                 "certificateThumbprint": null,
                 "digestAlgorithm":       "sha256",
@@ -84,15 +91,19 @@
                 "https://localhost:3333/tauri-update/{{target}}/{{current_version}}"
             ],
             "dialog":    true,
-            "pubkey":    "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDE3MTUzM0E3OEE0NjlFQjAKUldTd25rYUtwek1WRjN5a1BtVzVyMUJyOXVXVTFJai9UMjlmRFluVVhVQ3R0M3lpM2VIZkhkbE4K%"
+            "pubkey":    "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEExNTI5RkFCQjE4QURBRDYKUldUVzJvcXhxNTlTb1cvRFI3eGhvaVNUQUlKbnlheVM2N2pKTjMwL0lyR29PMTVSQVFyZGNrR0MK"
         },
         "windows":   [
             {
-                "fullscreen": false,
-                "height":     600,
-                "resizable":  true,
-                "title":      "DCI - Eco Atlantic",
-                "width":      800
+                "title":       "tauri.conf.json > tauri > windows > title",
+                "label":       "main",
+                "minWidth":    1000,
+                "minHeight":   600,
+                "resizable":   true,
+                "fullscreen":  false,
+                "visible":     false,
+                "decorations": true,
+                "alwaysOnTop": false
             }
         ]
     }

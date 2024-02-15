@@ -2,47 +2,47 @@ name: 'publish'
 
 # This will trigger the action on each push to the `release` branch.
 on:
-  push:
-    branches:
-      - release
+    push:
+        branches:
+            - release
 
 jobs:
-  publish-tauri:
-    permissions:
-      contents: write
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [ macos-latest ]
+    publish-tauri:
+        permissions:
+            contents: write
+        strategy:
+            fail-fast: false
+            matrix:
+                platform: [macos-latest]
 
-    runs-on: ${{ matrix.platform }}
-    steps:
-      - uses: actions/checkout@v4
+        runs-on: ${{ matrix.platform }}
+        steps:
+            - uses: actions/checkout@v4
 
-      - name: setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 21.6.1
+            - name: setup node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 21.6.1
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+            - name: Install pnpm
+              run: npm install -g pnpm
 
-      - name: install Rust stable
-        uses: dtolnay/rust-toolchain@stable
+            - name: install Rust stable
+              uses: dtolnay/rust-toolchain@stable
 
-      - name: install frontend dependencies
-        run: pnpm install
+            - name: install frontend dependencies
+              run: pnpm install
 
-      - uses: tauri-apps/tauri-action@v0
-        env:
-          CI: true
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
-          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
-        with:
-          appVersion: 'v0.0.2'
-          tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
-          releaseName: 'App v__VERSION__'
-          releaseBody: 'See the assets to download this version and install.'
-          releaseDraft: true
-          prerelease: false
+            - uses: tauri-apps/tauri-action@v0
+              env:
+                  CI: true
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+                  TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+              with:
+                  appVersion: 'v0.0.2'
+                  tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
+                  releaseName: 'App v__VERSION__'
+                  releaseBody: 'See the assets to download this version and install.'
+                  releaseDraft: true
+                  prerelease: false
