@@ -11,12 +11,19 @@ import {
     countValidatedQuotationsLast30Days,
     sumQuotationsLast30Days,
 } from '@/services/database-services.ts';
+import { getVersion } from '@tauri-apps/api/app';
 
 const DashboardPage = () => {
     const [quotationsLast30Days, setQuotationsLast30Days] = useState(0);
     const [validatedQuotationsLast30Days, setValidatedQuotationsLast30Days] =
         useState(0);
     const [salesLast30Days, setSalesLast30Days] = useState(0);
+
+    const [appVersion, setAppVersion] = useState('');
+
+    getVersion().then((version) => {
+        setAppVersion(version);
+    });
 
     useEffect(() => {
         return () => {
@@ -37,6 +44,7 @@ const DashboardPage = () => {
     return (
         <>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <h1 className="text-2xl">VERSION : {appVersion}</h1>
                 <Card>
                     <CardHeader>
                         <CardDescription>Nouveau devis</CardDescription>
